@@ -11,13 +11,15 @@ namespace API;
 public class AccountController : BaseApiControllers
 {
     private DataContext context;
-    public AccountController(DataContext context)
+    private ITokenServices tokenServices;
+    public AccountController(DataContext context, ITokenServices tokenServices)
     {
         this.context = context;
+        this.tokenServices = tokenServices;
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<AppUser>> Register(RegisterDTO registerDTO)
+    public async Task<ActionResult<UserDTOs>> Register(RegisterDTO registerDTO)
     {
         if (await UserExists(registerDTO.Username))
         {
@@ -33,11 +35,15 @@ public class AccountController : BaseApiControllers
         };
         context.Users.Add(user);
         await context.SaveChangesAsync();
-        return user;
+        return new UserDTOs
+        {
+            Username = user.UserName,
+            Token = tokenServices.CreateToken(user)
+        };
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AppUser>> Login(LoginDTO loginDTO)
+    public async Task<ActionResult<UserDTOs>> Login(LoginDTO loginDTO)
     {
         var user = await context.Users.SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
         if (user == null) return Unauthorized("invalide username");
@@ -48,11 +54,15 @@ public class AccountController : BaseApiControllers
         {
             if (computedHash[i] != user.PasswordHash[i])
             {
-                return Unauthorized("Invalid Passwork");
+                return Unauthorized("Invalid Password");
             }
         }
 
-        return user;
+        return new UserDTOs
+        {
+            Username = user.UserName,
+            Token = tokenServices.CreateToken(user)
+        };
     }
 
     private async Task<bool> UserExists(string username)
