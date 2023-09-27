@@ -14,6 +14,10 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { ListComponent } from './list/list.component';
 import { MessagesComponent } from './messages/messages.component';
 import {SharedModule} from "./_modules/shared.module";
+import { MemberCardComponent } from './members/member-card/member-card.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatButtonModule} from "@angular/material/button";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -24,7 +28,8 @@ import {SharedModule} from "./_modules/shared.module";
     MemberListComponent,
     MemberDetailComponent,
     ListComponent,
-    MessagesComponent
+    MessagesComponent,
+    MemberCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,8 +37,10 @@ import {SharedModule} from "./_modules/shared.module";
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
-    SharedModule
-
+    SharedModule,
+    MatTableModule,
+    MatButtonModule,
+    MatPaginatorModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
