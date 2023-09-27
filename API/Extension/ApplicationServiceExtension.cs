@@ -14,6 +14,8 @@ public static class ApplicationServiceExtension
         });
         services.AddCors(); //to allow many recourses from different origin communicate with
         services.AddScoped<ITokenServices, TokenServices>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         
         return services;
     }

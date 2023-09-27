@@ -8,7 +8,9 @@
           [(ngModel)]="model.username"
           placeholder="username">
   </div>
-
+  <div *ngFor="let user of users">
+    <p *ngIf="model.username == user.userName">duplicated</p>
+  </div>
   <div class="mb-3">
     <input type="password"
            class="form-control"
