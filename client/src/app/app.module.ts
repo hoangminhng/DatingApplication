@@ -21,6 +21,7 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {JwtInterceptor} from "./_interceptor/jwt.interceptor";
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import {GalleryComponent} from "ng-gallery";
+import {LoadingInterceptor} from "./_interceptor/loading.interceptor";
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import {GalleryComponent} from "ng-gallery";
         GalleryComponent,
     ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })
