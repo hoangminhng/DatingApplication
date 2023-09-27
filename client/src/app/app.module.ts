@@ -19,6 +19,8 @@ import {MatTableModule} from "@angular/material/table";
 import {MatButtonModule} from "@angular/material/button";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {JwtInterceptor} from "./_interceptor/jwt.interceptor";
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import {GalleryComponent} from "ng-gallery";
 
 @NgModule({
   declarations: [
@@ -30,18 +32,20 @@ import {JwtInterceptor} from "./_interceptor/jwt.interceptor";
     ListComponent,
     MessagesComponent,
     MemberCardComponent,
+    MemberEditComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    SharedModule,
-    MatTableModule,
-    MatButtonModule,
-    MatPaginatorModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        SharedModule,
+        MatTableModule,
+        MatButtonModule,
+        MatPaginatorModule,
+        GalleryComponent,
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
   ],
