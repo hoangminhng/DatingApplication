@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './nav/nav.component';
 import {FormsModule} from "@angular/forms";
@@ -18,6 +18,7 @@ import { MemberCardComponent } from './members/member-card/member-card.component
 import {MatTableModule} from "@angular/material/table";
 import {MatButtonModule} from "@angular/material/button";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {JwtInterceptor} from "./_interceptor/jwt.interceptor";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,6 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     HomeComponent,
     RegisterComponent,
     MemberListComponent,
-    MemberDetailComponent,
     ListComponent,
     MessagesComponent,
     MemberCardComponent,
@@ -42,7 +42,9 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     MatButtonModule,
     MatPaginatorModule,
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
