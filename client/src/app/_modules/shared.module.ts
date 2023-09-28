@@ -4,26 +4,29 @@ import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {ToastrModule} from "ngx-toastr";
 import {TabsModule} from "ngx-bootstrap/tabs";
 import {NgxSpinner, NgxSpinnerModule} from "ngx-spinner";
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
-    BsDropdownModule.forRoot(),
-    TabsModule.forRoot(),
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right'
-    }),
-    NgxSpinnerModule.forRoot({
-      type: 'line-scale-party'
-    })
-  ],
-  exports: [
-    BsDropdownModule,
-    ToastrModule,
-    TabsModule,
-    NgxSpinnerModule,
-  ]
+    declarations: [],
+    imports: [
+        CommonModule,
+        BsDropdownModule.forRoot(),
+        TabsModule.forRoot(),
+        ToastrModule.forRoot({
+            positionClass: 'toast-bottom-right'
+        }),
+        NgxSpinnerModule.forRoot({
+            type: 'line-scale-party'
+        }),
+        BsDatepickerModule.forRoot(),
+    ],
+    exports: [
+        BsDropdownModule,
+        ToastrModule,
+        TabsModule,
+        NgxSpinnerModule,
+        BsDatepickerModule,
+    ]
 })
 export class SharedModule {
 }
