@@ -25,11 +25,13 @@ public class UserRepository : IUserRepository
                     .SingleOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<MemberDTO>> GetMembersAsync()
+    public async Task<PageList<MemberDTO>> GetMembersAsync(UserParams userParams)
     {
-        return await context.Users
+        var query =  context.Users
             .ProjectTo<MemberDTO>(mapper.ConfigurationProvider)
-            .ToListAsync();
+            .AsNoTracking();
+
+        return await PageList<MemberDTO>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
     }
 
     public async Task<IEnumerable<AppUser>> GetUserAsync()

@@ -15,6 +15,6 @@
     {{label}} must be at most {{control.errors?.['maxlength'].requiredLength}} characters
   </div>
   <div class="invalid-feedback" *ngIf="control.errors?.['notMatching']">
-    Please enter a {{label}}
+    {{label}} not match
   </div>
 </div>

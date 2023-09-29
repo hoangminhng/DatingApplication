@@ -68,10 +68,6 @@ export class RegisterComponent  implements OnInit{
     this.cancelRegister.emit(false)
   }
 
-  updateandvalidity(){
-    this.registerForm.controls['confirmPassword'].updateValueAndValidity();
-  }
-
   private getDateOnly(dob:string| undefined){
     if (!dob) return;
     let theDob = new Date(dob);

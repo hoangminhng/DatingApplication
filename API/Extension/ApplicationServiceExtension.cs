@@ -16,6 +16,8 @@ public static class ApplicationServiceExtension
         services.AddScoped<ITokenServices, TokenServices>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.Configure<CloudinarySetting>(configuration.GetSection("CloudinarySettings"));
+        services.AddScoped<IPhotoService, PhotoService>();
         
         return services;
     }
