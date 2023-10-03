@@ -11,17 +11,25 @@ import {preventUnsaveChangesGuard} from "./_guards/prevent-unsave-changes.guard"
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
-  {path: '',
-    runGuardsAndResolvers: 'always',
-    canActivate: [authGuard],
-    children: [
-      {path: 'members', component: MemberListComponent},
-      {path: 'members/:username', component: MemberDetailComponent},
-      {path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsaveChangesGuard]},
-      {path: 'lists', component: ListComponent},
-      {path: 'messages', component: MessagesComponent},
-    ]
+  {
+    path: 'members',
+    loadChildren: () => import('./members/member.module').then(m => m.MembersModule),
   },
+  {
+    path: 'lists',
+    loadChildren: () => import('./list/list.module').then(m => m.ListModule),
+  },
+  // {path: '',
+  //   runGuardsAndResolvers: 'always',
+  //   canActivate: [authGuard],
+  //   children: [
+  //     {path: 'members', component: MemberListComponent},
+  //     {path: 'members/:username', component: MemberDetailComponent},
+  //     {path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsaveChangesGuard]},
+  //     {path: 'lists', component: ListComponent},
+  //     {path: 'messages', component: MessagesComponent},
+  //   ]
+  // },
   {path: '**', component: HomeComponent, pathMatch:'full'},
 
 ];
