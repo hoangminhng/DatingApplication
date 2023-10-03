@@ -17,6 +17,8 @@ export class RegisterComponent  implements OnInit{
   registerForm: FormGroup = new FormGroup({});
   maxDate: Date = new Date();
   validatorErrors: string[] | undefined;
+  passwordPattern: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,10}$/;
+
   constructor(private accountService:AccountService, private toastr:ToastrService,
               private fb: FormBuilder, private router:Router) {
   }
@@ -33,8 +35,7 @@ export class RegisterComponent  implements OnInit{
       dateOfBirth:['', Validators.required],
       city:['', Validators.required],
       country:['', Validators.required],
-      password:['', [Validators.required,
-        Validators.minLength(4), Validators.maxLength(10)]],
+      password:['', [Validators.required, Validators.pattern(this.passwordPattern)]],
       confirmPassword:['', [Validators.required, this.matchValue('password')]],
     });
     this.registerForm.controls['password'].valueChanges.subscribe({
@@ -59,7 +60,9 @@ export class RegisterComponent  implements OnInit{
         this.router.navigateByUrl('/members');
       },
       error: err =>{
-        this.validatorErrors = err
+        if (err.status === 400) {
+          this.validatorErrors = ['Username is already existed'];
+        }
       }
     })
   }

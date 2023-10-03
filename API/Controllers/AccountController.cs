@@ -48,6 +48,7 @@ public class AccountController : BaseApiControllers
             Token = tokenServices.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs,
+            Gender = user.Gender,
         };
     }
 
@@ -57,7 +58,7 @@ public class AccountController : BaseApiControllers
         var user = await context.Users
             .Include(p => p.Photos)
             .SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
-        if (user == null) return Unauthorized("invalide username");
+        if (user == null) return Unauthorized("Invalide username");
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password));
@@ -75,6 +76,7 @@ public class AccountController : BaseApiControllers
             Token = tokenServices.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs,
+            Gender = user.Gender,
         };
     }
 

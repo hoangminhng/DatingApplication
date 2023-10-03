@@ -12,31 +12,32 @@
     </label>
   </div>
   <app-text-input [formControl]="$any(registerForm.controls['username'])"
-                  [label]="'Username'"></app-text-input>
+                  [label]="'Username'">
+  </app-text-input>
+
   <app-text-input [formControl]="$any(registerForm.controls['knownAs'])"
-                  [label]="'Known As'"></app-text-input>
+                  [label]="'Known As'">
+  </app-text-input>
+
   <app-date-picker [formControl]="$any(registerForm.controls['dateOfBirth'])"
-                   [label]="'Date Of Birth'" [maxDate]="maxDate"></app-date-picker>
+                   [label]="'Date Of Birth'" [maxDate]="maxDate">
+  </app-date-picker>
+
   <app-text-input [formControl]="$any(registerForm.controls['city'])"
-                  [label]="'City'"></app-text-input>
+                  [label]="'City'">
+  </app-text-input>
+
   <app-text-input [formControl]="$any(registerForm.controls['country'])"
-                  [label]="'Country'"></app-text-input>
-  <div class="mb-3">
-    <app-text-input [formControl]="$any(registerForm.controls['password'])"
-                    [label]="'Password'" [type]="'password'">
-    </app-text-input>
-    <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.hasError('notMatching')">
-      the confirm password is not match
-    </div>
-  </div>
-  <div class="mb-3">
-    <app-text-input [formControl]="$any(registerForm.controls['confirmPassword'])"
-                    [label]="'Confirm Password'" [type]="'password'">
-    </app-text-input>
-    <div class="text-danger text-center" *ngIf="registerForm.hasError('passwordMismatch', ['confirmPassword'])">
-      The confirm password does not match
-    </div>
-  </div>
+                  [label]="'Country'">
+  </app-text-input>
+
+  <app-text-input [formControl]="$any(registerForm.controls['password'])"
+                  [label]="'Password'" [type]="'password'">
+  </app-text-input>
+
+  <app-text-input [formControl]="$any(registerForm.controls['confirmPassword'])"
+                  [label]="'Confirm Password'" [type]="'password'">
+  </app-text-input>
   <div class="row" *ngIf="validatorErrors">
     <ul class="text-danger">
       <li *ngFor="let error of validatorErrors">

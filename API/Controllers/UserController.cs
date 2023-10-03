@@ -24,12 +24,25 @@ public class UserController : BaseApiControllers
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery] UserParams userParams)
     {
+        var currentUser = await userRepository.GetUserByUsernameAsync(User.getUserName());
+        userParams.CurrentUsername = currentUser.UserName;
+
+        if (string.IsNullOrEmpty(userParams.Gender))
+        {
+            userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+        }
+
+        var username = User.FindFirst(ClaimTypes.Name)?.Value;
+
+        var loggedInUser = await userRepository.GetUserByUsernameAsync(username);
+
         var users = await userRepository.GetMembersAsync(userParams);
+
+        var userList = users.Where(x => x.Id != loggedInUser.Id).ToList();
 
         Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize,
                                                             users.TotalCount, users.TotalPages));
-
-        return Ok(users);
+        return Ok(userList);
     }
 
     // [HttpGet("{id}")] //api/user/2
