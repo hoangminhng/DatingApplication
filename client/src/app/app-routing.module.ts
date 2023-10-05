@@ -19,6 +19,7 @@ const routes: Routes = [
     path: 'lists',
     loadChildren: () => import('./list/list.module').then(m => m.ListModule),
   },
+  {path: 'messages', component: MessagesComponent},
   // {path: '',
   //   runGuardsAndResolvers: 'always',
   //   canActivate: [authGuard],
