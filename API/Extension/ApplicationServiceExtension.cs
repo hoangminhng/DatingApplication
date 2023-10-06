@@ -21,6 +21,8 @@ public static class ApplicationServiceExtension
         services.AddScoped<LogUserActivity>();
         services.AddScoped<ILikeRepository, LikesRepository>();
         services.AddScoped<IMessagesRepository, MessagesRepository>();
+        services.AddSignalR();
+        services.AddSingleton<PresenceTracker>();
         return services;
     }
 }

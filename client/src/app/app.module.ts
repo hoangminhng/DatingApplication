@@ -25,6 +25,8 @@ import {LoadingInterceptor} from "./_interceptor/loading.interceptor";
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { DatePickerComponent } from './_forms/date-picker/date-picker.component';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import {RouteReuseStrategy} from "@angular/router";
+import {CustomRouteReuse} from "./_services/customRouteReuse";
 
 @NgModule({
   declarations: [
@@ -57,6 +59,7 @@ import { PhotoEditorComponent } from './members/photo-editor/photo-editor.compon
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true},
+    {provide: RouteReuseStrategy, useClass: CustomRouteReuse}
   ],
   bootstrap: [AppComponent]
 })
