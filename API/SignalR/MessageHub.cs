@@ -8,15 +8,12 @@ namespace API;
 [Authorize]
 public class MessageHub : Hub
 {
-    private readonly IMessagesRepository messagesRepository;
-    private readonly IUserRepository userRepository;
+    private readonly IUnitOfwork _unitOfwork;
     private readonly IMapper mapper;
     private readonly IHubContext<PresenceHub> presenceHub;
-    public MessageHub(IMessagesRepository messagesRepository, IUserRepository userRepository
-        , IMapper mapper, IHubContext<PresenceHub> presenceHub)
+    public MessageHub(IUnitOfwork unitOfwork,IMapper mapper, IHubContext<PresenceHub> presenceHub)
     {
-        this.messagesRepository = messagesRepository;
-        this.userRepository = userRepository;
+        this._unitOfwork = unitOfwork;
         this.mapper = mapper;
         this.presenceHub = presenceHub;
     }
@@ -31,7 +28,12 @@ public class MessageHub : Hub
 
         await Clients.Group(groupName).SendAsync("UpdatedGroup", group);
 
-        var messages = await messagesRepository.GetMessageThread(Context.User.getUserName(), otherUser);
+        var messages = await _unitOfwork.MessageRepository.GetMessageThread(Context.User.getUserName(), otherUser);
+
+        if (_unitOfwork.HasChanges())
+        {
+            await _unitOfwork.Complete();
+        }
 
         await Clients.Caller.SendAsync("ReceiveMessageThread", messages);
     }
@@ -52,8 +54,8 @@ public class MessageHub : Hub
             throw new HubException("You can not send message to yourself");
         }
 
-        var sender = await userRepository.GetUserByUsernameAsync(username);
-        var recipient = await userRepository.GetUserByUsernameAsync(createMessageDTO.RecipientUsername);
+        var sender = await _unitOfwork.UserRepository.GetUserByUsernameAsync(username);
+        var recipient = await _unitOfwork.UserRepository.GetUserByUsernameAsync(createMessageDTO.RecipientUsername);
 
         if (recipient == null)
         {
@@ -70,7 +72,7 @@ public class MessageHub : Hub
         };
 
         var groupName = GetGroupName(sender.UserName, recipient.UserName);
-        var group = await messagesRepository.GetMessageGroup(groupName);
+        var group = await _unitOfwork.MessageRepository.GetMessageGroup(groupName);
 
         if (group.Connections.Any(x => x.Username == recipient.UserName))
         {
@@ -86,8 +88,8 @@ public class MessageHub : Hub
             }
         }
 
-        messagesRepository.AddMessage(message);
-        if (await messagesRepository.SaveAllAsycn())
+        _unitOfwork.MessageRepository.AddMessage(message);
+        if (await _unitOfwork.Complete())
         {
             await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDTO>(message));
         }
@@ -101,18 +103,18 @@ public class MessageHub : Hub
 
     private async Task<Group> AddToGroup(string groupName)
     {
-        var group = await messagesRepository.GetMessageGroup(groupName);
+        var group = await _unitOfwork.MessageRepository.GetMessageGroup(groupName);
         var connection = new Connection(Context.ConnectionId, Context.User.getUserName());
 
         if (group == null)
         {
             group = new Group(groupName);
-            messagesRepository.AddGroup(group);
+            _unitOfwork.MessageRepository.AddGroup(group);
         }
 
         group.Connections.Add(connection);
 
-        if (await messagesRepository.SaveAllAsycn())
+        if (await _unitOfwork.Complete())
         {
             return group;
         }
@@ -121,10 +123,10 @@ public class MessageHub : Hub
 
     private async Task<Group> RemoveFromMessageGroup()
     {
-        var group = await messagesRepository.GetGroupForConnection(Context.ConnectionId);
+        var group = await _unitOfwork.MessageRepository.GetGroupForConnection(Context.ConnectionId);
         var connection = group.Connections.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
-        messagesRepository.RemoveConnection(connection);
-        if (await messagesRepository.SaveAllAsycn())
+        _unitOfwork.MessageRepository.RemoveConnection(connection);
+        if (await _unitOfwork.Complete())
         {
             return group;
         }

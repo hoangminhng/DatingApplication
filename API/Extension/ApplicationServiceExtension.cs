@@ -19,9 +19,8 @@ public static class ApplicationServiceExtension
         services.Configure<CloudinarySetting>(configuration.GetSection("CloudinarySettings"));
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<LogUserActivity>();
-        services.AddScoped<ILikeRepository, LikesRepository>();
-        services.AddScoped<IMessagesRepository, MessagesRepository>();
         services.AddSignalR();
+        services.AddScoped<IUnitOfwork, UnitOfWork>();
         services.AddSingleton<PresenceTracker>();
         return services;
     }

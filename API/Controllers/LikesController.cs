@@ -6,20 +6,18 @@ namespace API;
 [Authorize]
 public class LikesController : BaseApiControllers
 {
-    private readonly IUserRepository userRepository;
-    private readonly ILikeRepository likeRepository;
-    public LikesController(IUserRepository userRepository, ILikeRepository likeRepository)
+    private readonly IUnitOfwork _unitOfwork;
+    public LikesController(IUnitOfwork unitOfwork)
     {
-        this.userRepository = userRepository;
-        this.likeRepository = likeRepository;
+        this._unitOfwork = unitOfwork;
     }
 
     [HttpPost("{username}")]
     public async Task<ActionResult> AddLike(string username)
     {
         var sourceUserId = User.getUserId();
-        var likedUser = await userRepository.GetUserByUsernameAsync(username);
-        var sourceUser = await likeRepository.GetUserWithLikes(sourceUserId);
+        var likedUser = await _unitOfwork.UserRepository.GetUserByUsernameAsync(username);
+        var sourceUser = await _unitOfwork.LikesRepository.GetUserWithLikes(sourceUserId);
 
         if (likedUser == null)
         {
@@ -31,7 +29,7 @@ public class LikesController : BaseApiControllers
             return BadRequest("You can not like yoursefl");
         }
 
-        var userLike = await likeRepository.GetUserLike(sourceUserId, likedUser.Id);
+        var userLike = await _unitOfwork.LikesRepository.GetUserLike(sourceUserId, likedUser.Id);
 
         if (userLike != null)
         {
@@ -46,7 +44,7 @@ public class LikesController : BaseApiControllers
 
         sourceUser.LikedUsers.Add(userLike);
 
-        if (await userRepository.SaveAllAsync())
+        if (await _unitOfwork.Complete())
         {
             return Ok();
         }
@@ -58,7 +56,7 @@ public class LikesController : BaseApiControllers
     {
         likeParams.UserId = User.getUserId();
         int userId = User.getUserId();
-        var users = await likeRepository.GetUserLikes(likeParams);
+        var users = await _unitOfwork.LikesRepository.GetUserLikes(likeParams);
         Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, 
             users.TotalCount, users.TotalPages));
         return Ok(users);

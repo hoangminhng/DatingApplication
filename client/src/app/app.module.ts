@@ -27,6 +27,8 @@ import { DatePickerComponent } from './_forms/date-picker/date-picker.component'
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import {RouteReuseStrategy} from "@angular/router";
 import {CustomRouteReuse} from "./_services/customRouteReuse";
+import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,7 @@ import {CustomRouteReuse} from "./_services/customRouteReuse";
     TextInputComponent,
     DatePickerComponent,
     PhotoEditorComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +58,7 @@ import {CustomRouteReuse} from "./_services/customRouteReuse";
     MatButtonModule,
     MatPaginatorModule,
     GalleryComponent,
+    ModalModule.forRoot(),
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},

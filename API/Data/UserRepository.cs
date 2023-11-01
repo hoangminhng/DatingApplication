@@ -25,6 +25,12 @@ public class UserRepository : IUserRepository
                     .SingleOrDefaultAsync();
     }
 
+    public async Task<string> UserGender(string username)
+    {
+        return await context.Users.Where(x => x.UserName == username)
+            .Select(x => x.Gender).FirstOrDefaultAsync();
+    }
+
     public async Task<PageList<MemberDTO>> GetMembersAsync(UserParams userParams)
     {
         var query = context.Users.AsQueryable();
@@ -66,11 +72,6 @@ public class UserRepository : IUserRepository
         return await context.Users
             .Include(p => p.Photos)
             .SingleOrDefaultAsync(x => x.UserName == username);
-    }
-
-    public async Task<bool> SaveAllAsync()
-    {
-        return await context.SaveChangesAsync() > 0;
     }
 
     public void Update(AppUser user)

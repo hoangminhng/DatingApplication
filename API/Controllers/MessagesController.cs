@@ -5,12 +5,12 @@ namespace API;
 
 public class MessagesController : BaseApiControllers
 {
-    private readonly IUserRepository userRepository;
+    private readonly IUnitOfwork _unitOfwork;
     private readonly IMessagesRepository messagesRepository;
     private readonly IMapper mapper;
-    public MessagesController(IUserRepository userRepository, IMessagesRepository messagesRepository, IMapper mapper)
+    public MessagesController(IUnitOfwork unitOfwork, IMessagesRepository messagesRepository, IMapper mapper)
     {
-        this.userRepository = userRepository;
+        this._unitOfwork = unitOfwork;
         this.messagesRepository = messagesRepository;
         this.mapper = mapper;
     }
@@ -24,8 +24,8 @@ public class MessagesController : BaseApiControllers
             return BadRequest("You can not send message to yourself");
         }
 
-        var sender = await userRepository.GetUserByUsernameAsync(username);
-        var recipient = await userRepository.GetUserByUsernameAsync(createMessageDTO.RecipientUsername);
+        var sender = await _unitOfwork.UserRepository.GetUserByUsernameAsync(username);
+        var recipient = await _unitOfwork.UserRepository.GetUserByUsernameAsync(createMessageDTO.RecipientUsername);
 
         if (recipient == null)
         {
@@ -42,7 +42,7 @@ public class MessagesController : BaseApiControllers
 
         messagesRepository.AddMessage(message);
 
-        if (await messagesRepository.SaveAllAsycn())
+        if (await _unitOfwork.Complete())
         {
             return Ok(mapper.Map<MessageDTO>(message));
         }
@@ -86,7 +86,7 @@ public class MessagesController : BaseApiControllers
         
         if (message.SenderDeleted && message.RecipientDeleted)  messagesRepository.DeleteMesage(message);
         
-        if(await messagesRepository.SaveAllAsycn()) return Ok();
+        if(await _unitOfwork.Complete()) return Ok();
 
         return BadRequest("Problem in delete message");
     }

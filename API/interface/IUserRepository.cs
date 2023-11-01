@@ -5,10 +5,10 @@ namespace API;
 public interface IUserRepository
 {
     void Update(AppUser user);
-    Task<bool> SaveAllAsync();
     Task<IEnumerable<AppUser>> GetUserAsync();
     Task<AppUser> GetUserByIdAsync(int id);
     Task<AppUser> GetUserByUsernameAsync(string username);
     Task<PageList<MemberDTO>> GetMembersAsync(UserParams userParams);
     Task<MemberDTO> GetMemberAsync(string username);
+    Task<string> UserGender(string username);
 }
